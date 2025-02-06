@@ -4,12 +4,16 @@ import Login from "./Login";
 
 const Bubbles = () => {
   useEffect(() => {
-    document.addEventListener("mousemove", (event) => {
+    const moveHandler = (event) => {
       const interactive = document.querySelector(".interactive");
       if (interactive) {
         interactive.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
       }
-    });
+    };
+
+    document.addEventListener("mousemove", moveHandler);
+
+    return () => document.removeEventListener("mousemove", moveHandler);
   }, []);
 
   return (

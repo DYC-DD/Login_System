@@ -39,3 +39,17 @@ h2 {
   max-width: 300px;
   margin: 0 auto;
 }
+
+.link {
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  margin-top: 10px;
+}
+.link a {
+  color: #00ffcc;
+  text-decoration: none;
+}
+.link a:hover {
+  text-decoration: underline;
+}

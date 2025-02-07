@@ -53,3 +53,36 @@ h2 {
 .link a:hover {
   text-decoration: underline;
 }
+
+.password-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 300px;
+}
+
+.password-input {
+  flex: 1; /* 確保輸入框填滿可用空間 */
+  height: 30px; /* 與其他輸入框一致 */
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: none;
+  text-align: center; /* 確保文字置中 */
+  font-family: "Ubuntu Mono", sans-serif;
+  font-size: 16px;
+  padding: 0; /* 移除內邊距以保持文字居中 */
+}
+
+.show-password-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #555;
+}
+
+.show-password-btn:hover {
+  color: black;
+}

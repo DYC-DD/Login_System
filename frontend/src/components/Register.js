@@ -1,34 +1,31 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
 
-const Register = () => {
+const Register = ({ toggleForm }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // 新增確認密碼狀態
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate();
-
-  // **防止已登入用戶訪問註冊頁面**
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      navigate("/dashboard");
+      window.location.href = "/dashboard";
     }
-  }, [navigate]);
+  }, []);
 
   const handleRegister = async () => {
     setError("");
     setSuccess("");
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !confirmPassword) {
       setError("請填寫所有欄位！");
       return;
     }
 
-    // **Email & 密碼格式驗證**
     if (!/\S+@\S+\.\S+/.test(email)) {
       setError("請輸入有效的 Email 格式");
       return;
@@ -36,6 +33,11 @@ const Register = () => {
 
     if (password.length < 6) {
       setError("密碼長度至少 6 個字元");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("密碼與確認密碼不一致！");
       return;
     }
 
@@ -49,17 +51,14 @@ const Register = () => {
       setSuccess(res.data.msg);
       setError("");
 
-      // **清除輸入框**
       setUsername("");
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
 
-      // **2 秒後自動跳轉到登入頁面**
-      setTimeout(() => navigate("/"), 2000);
+      setTimeout(() => toggleForm(), 2000);
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.msg || err.message || "註冊失敗，請稍後再試！";
-      setError(errorMsg);
+      setError(err.response?.data?.msg || "註冊失敗，請稍後再試！");
       setSuccess("");
     }
   };
@@ -84,19 +83,45 @@ const Register = () => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <input
-        className="input"
-        type="password"
-        placeholder="密碼"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <div className="password-container">
+        <input
+          className="input password-input"
+          type={showPassword ? "text" : "password"}
+          placeholder="密碼"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          className="show-password-btn"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? "🙈" : "👁"}
+        </button>
+      </div>
+      <div className="password-container">
+        <input
+          className="input password-input"
+          type={showPassword ? "text" : "password"}
+          placeholder="確認密碼"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button
+          className="show-password-btn"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? "🙈" : "👁"}
+        </button>
+      </div>
       <button className="button" onClick={handleRegister}>
         註冊
       </button>
 
       <p className="link">
-        已經有帳號？ <Link to="/">點擊登入</Link>
+        已經有帳號？{" "}
+        <span onClick={toggleForm} className="toggle-link">
+          點擊登入
+        </span>
       </p>
     </div>
   );

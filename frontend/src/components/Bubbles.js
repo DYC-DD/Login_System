@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/Bubbles.css";
 import Login from "./Login";
+import Register from "./Register";
 
 const Bubbles = () => {
+  const [showLogin, setShowLogin] = useState(true);
+
   useEffect(() => {
     const moveHandler = (event) => {
       const interactive = document.querySelector(".interactive");
@@ -19,7 +22,11 @@ const Bubbles = () => {
   return (
     <div>
       <div className="text-container">
-        <Login />
+        {showLogin ? (
+          <Login toggleForm={() => setShowLogin(false)} />
+        ) : (
+          <Register toggleForm={() => setShowLogin(true)} />
+        )}
       </div>
       <div className="gradient-bg">
         <svg xmlns="http://www.w3.org/2000/svg">

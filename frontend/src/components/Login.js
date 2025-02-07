@@ -1,14 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import "../styles/Login.css";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ toggleForm }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     try {
@@ -19,7 +17,7 @@ const Login = () => {
 
       localStorage.setItem("token", res.data.token);
       alert("登入成功！");
-      navigate("/dashboard");
+      window.location.href = "/dashboard";
     } catch (err) {
       setError(err.response?.data?.msg || "登入失敗，請稍後再試！");
     }
@@ -27,7 +25,7 @@ const Login = () => {
 
   return (
     <div>
-      <h2>Login</h2>
+      <h2>登入</h2>
       {error && <p className="error">{error}</p>}
       <div className="form-container">
         <input
@@ -36,17 +34,28 @@ const Login = () => {
           placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          className="input"
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="password-container">
+          <input
+            className="input password-input"
+            type={showPassword ? "text" : "password"}
+            placeholder="密碼"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            className="show-password-btn"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "🙈" : "👁"}
+          </button>
+        </div>
         <button className="button" onClick={handleLogin}>
-          &nbsp;Login&nbsp;
+          &nbsp;登入&nbsp;
         </button>
         <p className="link">
-          還沒有帳號嗎？ <Link to="/register">點擊註冊</Link>
+          還沒有帳號嗎？{" "}
+          <span onClick={toggleForm} className="toggle-link">
+            點擊註冊
+          </span>
         </p>
       </div>
     </div>

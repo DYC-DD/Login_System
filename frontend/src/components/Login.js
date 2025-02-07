@@ -10,22 +10,27 @@ const Login = ({ toggleForm }) => {
 
   const handleLogin = async () => {
     try {
+      // 發送 POST 請求到後端 API 進行登入驗證
       const res = await axios.post("http://localhost:5001/api/auth/login", {
         email,
         password,
       });
 
       localStorage.setItem("token", res.data.token);
-      alert("登入成功！");
+
+      // alert("登入成功！"); // 跳出登入成功訊息視窗
+
       window.location.href = "/dashboard";
     } catch (err) {
-      setError(err.response?.data?.msg || "登入失敗，請稍後再試！");
+      setError(
+        err.response?.data?.msg || "Login failed, please try again later!"
+      );
     }
   };
 
   return (
     <div>
-      <h2>登入</h2>
+      <h2>Login</h2>
       {error && <p className="error">{error}</p>}
       <div className="form-container">
         <input
@@ -38,7 +43,7 @@ const Login = ({ toggleForm }) => {
           <input
             className="input password-input"
             type={showPassword ? "text" : "password"}
-            placeholder="密碼"
+            placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
@@ -49,12 +54,12 @@ const Login = ({ toggleForm }) => {
           </button>
         </div>
         <button className="button" onClick={handleLogin}>
-          &nbsp;登入&nbsp;
+          Login
         </button>
         <p className="link">
-          還沒有帳號嗎？{" "}
+          Don't have an account yet ?{" "}
           <span onClick={toggleForm} className="toggle-link">
-            點擊註冊
+            Click to sign up.
           </span>
         </p>
       </div>

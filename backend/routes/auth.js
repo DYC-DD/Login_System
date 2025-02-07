@@ -11,19 +11,22 @@ router.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      return res.status(400).json({ msg: "請填寫所有欄位！" });
+      return res.status(400).json({ msg: "Please fill in all fields!" });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ msg: "密碼長度至少 6 個字元" });
+      return res
+        .status(400)
+        .json({ msg: "Password must be at least 6 characters long!" });
     }
 
     let userExists = await User.findOne({ email });
-    if (userExists) return res.status(400).json({ msg: "此 Email 已被註冊" });
+    if (userExists)
+      return res.status(400).json({ msg: "This email is already registered!" });
 
     let usernameExists = await User.findOne({ username });
     if (usernameExists)
-      return res.status(400).json({ msg: "此使用者名稱已被使用" });
+      return res.status(400).json({ msg: "This username is already taken!" });
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -35,10 +38,10 @@ router.post("/register", async (req, res) => {
     });
 
     await user.save();
-    res.status(201).json({ msg: "註冊成功，請登入！" });
+    res.status(201).json({ msg: "Registration successful, please log in!" });
   } catch (error) {
-    console.error("註冊錯誤：", error.message);
-    res.status(500).json({ msg: "伺服器錯誤，請稍後再試！" });
+    console.error("Registration error：", error.message);
+    res.status(500).json({ msg: "Server error, please try again later!" });
   }
 });
 
@@ -48,11 +51,11 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     let user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "用戶不存在" });
+    if (!user) return res.status(400).json({ msg: "User does not exist!" });
 
     // 密碼比對
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "密碼錯誤" });
+    if (!isMatch) return res.status(400).json({ msg: "Incorrect password" });
 
     // 產生 JWT Token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -61,8 +64,8 @@ router.post("/login", async (req, res) => {
 
     res.json({ token, userId: user._id });
   } catch (error) {
-    console.error("登入錯誤：", error.message);
-    res.status(500).json({ msg: "伺服器錯誤，請稍後再試！" });
+    console.error("Login Error：", error.message);
+    res.status(500).json({ msg: "Server error, please try again later!" });
   }
 });
 
